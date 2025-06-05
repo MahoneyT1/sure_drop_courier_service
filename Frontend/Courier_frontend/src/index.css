@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
 
+
 body, html {
     margin: 0;
     padding: 0;
@@ -12,5 +13,7 @@ body, html {
     --color-secondary: #03AEF6;
     --font-Inter: "Inter", "sans-serif"
 }
+
+
 
 

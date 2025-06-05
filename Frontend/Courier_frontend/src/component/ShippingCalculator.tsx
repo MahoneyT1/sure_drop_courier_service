@@ -47,48 +47,49 @@ const ShippingCalculator: React.FC = () => {
     };
 
   return (
-    <section className='w-[90vw] mt-5 p-4 pb-10 bg-white shadow-[0px_2px_2px_1px_gray] rounded-2xl'>
+    <section className='w-[283px] md:w-[650px] lg:w-[750px] mt-20 p-4 my-13 bg-white shadow-[0px_2px_2px_1px_gray] rounded-2xl'>
         <div className='text-center'>
-            <h6 className='text-2xl font-semibold'>Shipping Rate Calculator</h6>
+            <h6 className='text-2xl font-semibold text-primary'>Shipping Rate Calculator</h6>
         </div>
 
-        <div className='flex flex-col mt-5'>
-            <label htmlFor="weight">Weight (kg)</label>
+        <div className='grid grid-cols-1  mt-5'>
+            <label htmlFor="weight" className='font-semibold'>Weight (kg)</label>
             <input id='weight'
                 type="number"
                 placeholder='Enter package weight'
                 onChange={(e)=> setWeight(e.target.value)}
-                className='border-2 border-gray-400 rounded mt-1 p-2'
+                className='border-2  border-gray-400 rounded mt-1 p-2'
             />
         </div>
 
-        <div className='grid grid-cols-3 gap-3 mt-3'>
-            <div className='w-[100px]'>
-                <label htmlFor="length">Length (cm)</label>
-                <input id='length' type="number" placeholder='Width'
+        <div className='grid grid-cols-3 gap-2 mt-3'>
+            <div className=' '>
+                <label htmlFor="length" className='font-semibold'>Length(cm)</label>
+                <input id='length' type="number" placeholder='Length' 
                 onChange={(e)=> setLength(e.target.value)}
-                className='border-2 border-gray-400 rounded w-20 text-center' />
+                className='border-2 border-gray-400  rounded w-full text-center' />
             </div>
 
-            <div className='w-[100px]'>
-                <label htmlFor="Width">Width (cm)</label>
-                <input type="number" placeholder='Width'
+            <div className=''>
+                <label htmlFor="width" className='font-semibold'>Width(cm)</label>
+                <input type="number" placeholder='Width' id='width'
                 onChange={(e)=> setWidth(e.target.value)}
-                className='border-2 border-gray-400 rounded w-20 text-center' />
+                className='border-2 border-gray-400 w-full rounded  text-center' />
             </div>
 
-            <div className='w-[100px] '>
-                <label htmlFor="Length">Height (cm)</label>
-                <input type="number" placeholder='Height'
+            <div className=''>
+                <label htmlFor="height" className='font-semibold'>Height(cm)</label>
+                <input type="number" placeholder='Height' id='height'
                 onChange={(e)=> setHeight(e.target.value)}
-                className='border-2 border-gray-400 rounded w-20 text-center' />
+                className='border-2 border-gray-400 w-full rounded text-center' />
+            </div>
             </div>
 
-            <div>
-                <label htmlFor="dom-inter">Domestic</label>
+        <div className='col-span-3 mt-5'>
+                <label htmlFor="dom-inter" className='font-semibold'>Domestic</label>
                 <select name="dom-inter"
                  id="dom-inter"
-                 className='border-2 border-gray-400 w-[650px] rounded p-2'
+                 className='border-2 border-gray-300 w-full rounded p-2 text-gray-500'
                  onChange={(e)=> setDestination(e.target.value)}
                  >
                  
@@ -97,24 +98,25 @@ const ShippingCalculator: React.FC = () => {
 
                  </select>
             </div>
-        </div>
         <button
             onClick={calculateShippingRate}
-            className='border-2 mt-4 rounded w-[260px] p-3 border-gray-400 bg-gradient-to-r from-green-700 to-green-400 text-white'
+            className='grid grid-cols-1 w-full border-2 mt-4 rounded p-3
+            border-gray-400 bg-gradient-to-r from-green-700
+            to-green-400 text-white shadow-md active:shadow-inner transition-all duration-100'
             
         >
                 Calculate Shipping Rate
         </button>
 
         {error && (
-            <div>
+            <div className='text-red-400'>
                 {error}
             </div>
         )}
 
         {price && (
-            <div>
-                Estimated shipping cost : <strong>{price.toFixed(2)}</strong>
+            <div className='text-white p-1 mt-2 bg-primary'>
+                Estimated shipping cost : <strong className='text-green-500'>${price.toFixed(2)}</strong>
             </div>
         )}
 
