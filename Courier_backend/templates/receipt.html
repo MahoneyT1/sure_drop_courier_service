@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receipt #{{ receipt.package.id }}</title>
+    <style type="text/css">
+        /* Reset and base styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Header styles */
+        h1 {
+            color: #2E7D32; /* Dark green */
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .header {
+            color: #2E7D32;
+            text-align: center;
+            font-size: 18px;
+            margin: 15px 0 25px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        th {
+            background-color: #2E7D32;
+            color: white;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        /* Amount highlighting */
+        .amount {
+            font-weight: bold;
+            color: #1E88E5; /* Blue */
+        }
+        
+        /* Print-specific adjustments */
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Fast-Link Courier Services</h1>
+    <h3 class="header">Receipt for Package #{{ receipt.package.id }}</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Senders's name</th>
+                <th>Amount</th>
+                <th>Issued at</th>
+                <th>Tracking ID</th>
+                <th>Payment Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ receipt.package.user.get_full_name|default:receipt.package.user.username }}</td>
+                <td class="amount">${{ receipt.amount }}</td>
+                <td>{{ receipt.issued_at|date:"F j, Y H:i" }}</td>
+                <td>{{ receipt.package.tracking_id|default:receipt.package.id }}</td>
+                <td>{{ receipt.payment_status }}</td>
+            </tr>
+        </tbody>
+    </table>
+ 
+    <!-- Optional footer -->
+    <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #777;">
+        <p>Thank you for choosing our services!</p>
+        <p class="no-print">This is a computer-generated receipt.</p>
+    </div>
+</body>
+</html>
