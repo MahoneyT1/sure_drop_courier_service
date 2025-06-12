@@ -15,7 +15,7 @@ class Receipt(BaseModel):
         ('pending', 'Pending'),
         ('paid', 'Paid')
     )
-    package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name='receipts')
+    package = models.OneToOneField(Package, on_delete=models.CASCADE, related_name='receipt')
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
     html_content = models.TextField(null=False, blank=False)
     issued_at = models.DateTimeField(auto_now_add=True)

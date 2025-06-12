@@ -11,7 +11,7 @@
 """
 
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -23,15 +23,16 @@ from Delivery.models import Delivery
 from Delivery.serializer import DeliverySerializer
 from Receipt.models import Receipt
 from Receipt.serializer import ReceiptSerializer
-from Location.models import Location
-from Location.serializer import LocationSerializer
+from DeliveryStatusHistory.models import DeliveryStatusHistory
+from DeliveryStatusHistory.serializer import DeliveryStatusHistorySerializer
 from django.template.loader import render_to_string
 from rest_framework.exceptions import ValidationError
 from django.db.models import Prefetch
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.utils import timezone
 import datetime
 import traceback
-
 
 
 class PackageListCreateView(ListCreateAPIView):
@@ -44,10 +45,12 @@ class PackageListCreateView(ListCreateAPIView):
     queryset = Package.objects.all()
     serializer_class = PackageSerializer
 
+    @method_decorator(cache_page(60 * 10))
     def get(self, request, *args, **kwargs):
         """
             Handle GET requests to list all Package objects.
         """
+        print("get list of package worked, but not cache")
         packages = self.get_queryset()
         serializer = self.get_serializer(packages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -70,27 +73,27 @@ class PackageListCreateView(ListCreateAPIView):
                 # create a delivery and assign courier and package in it
 
                 pickup_date = serializerPackage.validated_data.get('pickup_date')
-                pickup_date_timezone = timezone.make_aware(
-                    datetime.datetime.combine(pickup_date, datetime.time.min)
-                    )
+               
                 try:
                     # create a delivery and to track both courier and the package
                     delivery = Delivery.objects.create(
                         courier=assign_courier,
                         package=package,
                         delivery_type=delivery_type,
-                        delivery_time=pickup_date_timezone,
+                        estimated_delivery_date=pickup_date,
                         delivery_address=serializerPackage.validated_data.get('recipient_address'),
                     )
+                    
                     serialized_delivery = DeliverySerializer(delivery)
 
                     # create a location
                     try:
-                        location = Location.objects.create(
-                            package=package,
+                        delivery_history =  DeliveryStatusHistory.objects.create(
+                            delivery=delivery,
+                            status='created',
                         )
-                        location = location.save()
-                        serialized_location = LocationSerializer(location)
+                        delivery_history = delivery_history.save()
+                        serialized_delivery_history =  DeliveryStatusHistorySerializer(delivery_history)
                     except Exception as e:
                         print(str(e))
                         return Response(
@@ -118,15 +121,14 @@ class PackageListCreateView(ListCreateAPIView):
                                 }, 
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
                             )
-
-                        serialized_receipt = ReceiptSerializer(receipt)
+                        
+                        serializerPackage = PackageSerializer(package, context={'request': request})
+                        serialized_receipt = ReceiptSerializer(receipt, context={'request': request})
                         return Response(
-                            {
+                             {
                                 "success": "successfully shipped your Package",
                                 "package": serializerPackage.data,
-                                "delivery": serialized_delivery.data,
-                                "receipt": serialized_receipt.data,
-                                "location": serialized_location.data
+                                'receipt': serialized_receipt.data,
                             },
                             status=status.HTTP_201_CREATED
                         )
@@ -177,21 +179,27 @@ class PackageRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = PackageSerializer
     permission_classes = [IsAuthenticated]
 
+
     def get_queryset(self):
         return Package.objects.prefetch_related(
             Prefetch(
-                'deliveries', queryset=Delivery.objects.select_related('courier')
-            )
-        ).select_related('user')
+                'deliveries', 
+                queryset=Delivery.objects.select_related(
+                    'courier').prefetch_related(
+                        'histories'), 
+            ),
+        ).select_related('user','receipt')
 
+    @method_decorator(cache_page(60 * 10))
     def get(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
             serializer = self.get_serializer(instance)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
         except Package.DoesNotExist:
-            print("Package with the ID does not exist")
             return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+        
         except Exception as e:
             print(str(e))
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
