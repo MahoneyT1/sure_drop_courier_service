@@ -51,8 +51,8 @@ const Map: React.FC = () => {
         
 
         <div className='mt-15 m-5 grid grid-cols-1 md:grid-cols-12 place-items-baseline md:gap-2
-        lg:col-span-6 '>
-            <div className='h-[200px] bg-gray-800 rounded-lg text-white  col-span-6'>
+        lg:col-span-6 gap-3'>
+            <div className='h-[200px] bg-gray-800 rounded-lg text-white  col-span-12 '>
                 {/* icon/h5 container */}
                 <div className='flex p-3 gap-3'>
                     <span className='rounded-full bg-blue-600/20 w-10 h-10 flex
@@ -64,7 +64,7 @@ const Map: React.FC = () => {
                 </p>
             </div>
 
-            <div className='h-[200px] bg-gray-800 rounded-lg text-white mt-4 col-span-6'>
+            <div className='h-[200px] bg-gray-800 rounded-lg text-white mt-4 col-span-12'>
                 <div className='flex p-3 gap-3'>
                     <span className='rounded-full bg-blue-600/20 w-10 h-10 flex
                     text-blue-400 items-center justify-center'><LucidePhone/></span>
@@ -127,8 +127,7 @@ const Map: React.FC = () => {
                     <div>
                         <Button buttonName='Send Message'
                         onClickFunc={()=> submitForm}
-                        className='bg-gradient-to-r from-green-200
-                         to-green-800 w-full mt-4 p-3 rounded-lg text-gray-100'/>
+                        className='bg-green-800 w-full mt-4 p-3 rounded-lg text-gray-100'/>
                     </div>
                 </form>
             </div>

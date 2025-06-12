@@ -7,7 +7,7 @@
 .box::after {
     content: "";
     position: absolute;
-    top: 20px;
+    top: 90px;
     left: 6px;
     width: 2px;
     height: 30%;

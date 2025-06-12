@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useNavigation } from 'react'
 import { Menu, X } from 'lucide-react';
-import suredrop from "../../assets/suredrop-logo.png";
+import suredrop from "../../assets/newLogo.png";
 import {  Link, useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import { AuthContext } from "./ToggleLoginLogoutButton";
@@ -72,15 +72,22 @@ const Navbar: React.FC = () => {
 
              {/* Mobile navigation (hidden on default) */}
             {isOpen && (
-                <nav id='mobile-menu' className='md:hidden bg-blue-500 '>
-                    <ul className='flex flex-col items-center '>
-                        <li><Link className='hover:text-yellow-300 py-1' to="/">Home</Link></li>
-                        <li><Link className='hover:text-yellow-300 py-1' to="/about">About</Link></li>
-                        <li><Link className='hover:text-yellow-300 py-1' to="/contact">Contact</Link></li>
-                        <li><Link className='hover:text-yellow-300 py-1' to="/service">Service</Link></li>
-                        <li><Link className='hover:text-yellow-300 py-1' to="/track">Track</Link></li>
-                        
+                <nav id='mobile-menu' className='md:hidden  '>
+                    <ul className='flex flex-col items-center p-4 gap-3'>
+                        <li><Link className='hover:text-yellow-300 py-1 ' to="/">Home</Link></li>
+                          <li><Link className='hover:text-yellow-300 py-1 ' to="/about">About</Link></li>
+                          <li><Link className='hover:text-yellow-300 py-1 ' to="/contact">Contact</Link></li>
+                        <li><Link className='hover:text-yellow-300 py-1 ' to="/service">Service</Link></li>
+                          <li><Link className='hover:text-yellow-300 py-1  ' to="/track">Track</Link></li>
+                          {Auth?.isAuthenticated ? (
+                              <Button buttonName='logout' className='bg-green-500 p-1 rounded font-bold'
+                                  onClickFunc={async () => handleLogout()} />
+                          ) : (
+                              <Button buttonName='login' className='bg-green-500 to-green-500 p-2 rounded font-bold'
+                                  linkUrl='/login' />
+                          )}
                     </ul>
+                   
                 </nav>
             )}
         </div>

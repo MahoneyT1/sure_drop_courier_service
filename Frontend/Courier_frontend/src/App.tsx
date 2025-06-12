@@ -23,7 +23,7 @@ const App: React.FC = () => {
     <div className=''>
       <Router>
         <Navbar />
-        <ToastContainer/>
+        <ToastContainer autoClose={2000} />
         <Routes>
           <Route path='/' element={ <Home/> } />
           <Route path='/Login' element={ <Login/> }/>
