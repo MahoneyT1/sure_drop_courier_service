@@ -36,13 +36,13 @@ const Service:React.FC = () => {
             <div className='mt-8 flex flex-col gap-1 justify-center items-center md:flex-row md:gap-5'>
                 <div className='m-1'>
                     <Button buttonName='Track Your Shipment'
-                    className='bg-gradient-to-r from-blue-400/70 to-green-900 p-2 rounded-lg md:p-4'
+                    className='bg-green-700 p-2 text-gray-200 rounded-lg md:p-4'
                     onClickFunc={handleClick}/>
                 </div>
 
                 <div className='m-1'>
                     <Button buttonName='Explore our services'
-                    className='bg-white p-2 rounded-lg  md:p-4' onClickFunc={handleClick} 
+                    className='border-1 p-2 rounded-lg  md:p-4' onClickFunc={handleClick} 
                     titleStyle='text-primary font-lg'/>
                 </div>
             </div>

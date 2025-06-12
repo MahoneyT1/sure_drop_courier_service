@@ -1,12 +1,15 @@
 import React from 'react';
 import Button from '../Button';
 import CtaImage from '../../assets/cta2.png'
+import { useNavigate } from 'react-router-dom';
 
 
 const CtaSection: React.FC = () => {
+    const navigateToCreateShipment = useNavigate();
 
     const handlCreateShipmentButton = ()=> {
-        console.log('clicked me')
+        console.log('clicked me');
+        navigateToCreateShipment('/create-shipment');
     }
   return (
     <section style={{

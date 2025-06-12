@@ -4,25 +4,19 @@ import { cardPropData } from './TrackData';
 import { useForm } from 'react-hook-form';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
-console.log('Base URL:', import.meta.env.VITE_API_BASE_URL);
+// console.log('Base URL:', import.meta.env.VITE_API_BASE_URL);
 
 
 interface TrackForm {
   id: string,
 };
 
-// track props type casting
-type TrackProps = {
-  id: string,
-};
-
 
 const Track: React.FC = ()=> {
-  const [ data, setData ] = useState(null);
-  const [error, setError] = useState(null);
 
   // instance of useNavigate
   const navigate = useNavigate();
@@ -35,8 +29,6 @@ const Track: React.FC = ()=> {
 
   //handle the obtained data from the form
   const handleTrack = async (data: { id: string }) => {
-    console.log(data)
-
     // extract id from the form
 
     const { id } = data;
@@ -45,11 +37,10 @@ const Track: React.FC = ()=> {
           `${baseUrl}/packages/${id}/`, { withCredentials: true });
 
         const packageData = await response.data;
-        setData(response.data);
         navigate(`/package-details`, { state: {package: packageData }});
 
       } catch( err: any) {
-        setError(err);
+        toast.error(err);
       }
     }
 
@@ -85,13 +76,14 @@ const Track: React.FC = ()=> {
             { errors.id && (<p className='text-red-500'>{errors.id.message}</p>  )}
 
             <div className='inline-flex text-white items-center col-span-5 
-              justify-center bg-gradient-to-r from-green-700 to-green-400
+              justify-center bg-gradient-to-r 
               rounded active:scale-95 md:me-3'>
-              <i className="fa-solid fa-magnifying-glass items-center"></i>
 
               <button
                 type='submit'
-                className='text-lg flex flex-end rounded'>Track
+                className='text-lg flex flex-end from-green-700 to-green-400
+                rounded active:scale-95'> 
+                <i className="fa-solid fa-magnifying-glass items-center"></i>
               </button>
 
             </div> 

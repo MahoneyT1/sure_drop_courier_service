@@ -1,12 +1,9 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import ShipmentForm from './ShipmentForm';
 import axios from 'axios';
-import { object } from 'zod';
-import { body, div } from 'motion/react-client';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../component/Navbar/ToggleLoginLogoutButton';
 import { useDownloadReceipt } from './utils'
-
 
 
 interface CreateShipmentTypes {
@@ -58,12 +55,12 @@ const CreateShipment: React.FC = () => {
     return (
         <section className='w-full min-h-screen bg-primary py-15'>
             {receipt && (
-                <div className='text-white text-center p-4 bg-red-500 '>
-                    <p className='pb-3 lg:text-2xl'>Your receipt is ready</p>
+                <div className='text-white text-center p-4 bg-white '>
+                    <p className='pb-3 text-2xl lg:text-2xl text-primary font-bold'>Your receipt is ready</p>
                     <a 
                         href={receipt.url} 
                         download={`receipt_${receipt.id}.pdf`}
-                        className='text-white p-2 bg-green-500 rounded '
+                        className='text-white p-2 bg-green-500 rounded font-bold'
                         >
                         Download Receipt
                     </a>

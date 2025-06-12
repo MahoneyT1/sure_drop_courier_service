@@ -26,7 +26,7 @@ type FormType = {
 };
 
 const ShipmentForm: React.FC<FormProps> = ({ onSubmit }: { onSubmit: (data: any) => void }) => {
-    const { register, handleSubmit, formState:{ errors, isLoading }} = useForm<FormType>();
+    const { register, handleSubmit, formState:{ errors, isLoading , isSubmitting }} = useForm<FormType>();
 
     // set form state
     const [step, setStep] = useState(1);
@@ -160,8 +160,10 @@ const ShipmentForm: React.FC<FormProps> = ({ onSubmit }: { onSubmit: (data: any)
                 :
                 (
                     <Button buttonName='Submit' onClickFunc={handleSubmit(handleSubmitForm)}
-                    className='bg-green-600
-                    p-2 rounded text-white text-semibold'/>
+                    className={`bg-green-600
+                    p-2 rounded text-white text-semibold ${isSubmitting
+                         ? "bg-gray-400 cursor-not-allowed" 
+                        : "bg-blue-500 hover:bg-blue-600" }`}/>
                 )
             }
         </div>
