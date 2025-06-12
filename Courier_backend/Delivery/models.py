@@ -2,11 +2,12 @@ from django.db import models
 from Package.models import Package
 from Courier.models import Courier
 from Courier_backend.models.base import BaseModel
+from DeliveryStatusHistory.models import DeliveryStatusHistory
 
 
 DELIVERY_STATUS_CHOICES = (
-    ('pending', 'Pending'),
-    ('in_transit', 'In Transit'),
+    ('created', 'Created'),
+    ('on_transit', 'On Transit'),
     ('delivered', 'Delivered'),
     ('cancelled', 'Cancelled'),
 )
@@ -24,12 +25,16 @@ class Delivery(BaseModel):
     """
     courier = models.ForeignKey('Courier.Courier', on_delete=models.CASCADE, related_name='deliveries')
     package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name='deliveries')
-    pickup_time = models.DateTimeField(max_length=50, null=True, blank=True)
-    delivery_time = models.DateTimeField(max_length=40 ,null=False, blank=False)
+    estimated_delivery_date = models.DateField(null=True, blank=True)
     delivery_address = models.CharField(max_length=255)
     delivery_type = models.CharField(max_length=50, choices=DELIVERY_TYPE_CHOICE, default='domestic')
-    delivery_status = models.CharField(max_length=50, choices=DELIVERY_STATUS_CHOICES, default='pending')
+    current_status = models.CharField(max_length=50, choices=DELIVERY_STATUS_CHOICES, default='created')
 
     def __str__(self):
         """return string representation of user model"""
-        return f'{self.package}, {self.courier}, {self.pickup_time}'
+        return f'{self.package}, {self.courier}, {self.current_status}'
+
+    def update_status(self, new_status):
+        self.current_status = new_status
+        self.save()
+        DeliveryStatusHistory.objects.create(delivery=self, status=new_status)

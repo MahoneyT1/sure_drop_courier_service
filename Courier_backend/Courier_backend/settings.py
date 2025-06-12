@@ -64,6 +64,8 @@ INSTALLED_APPS = [
     'Payment',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'DeliveryStatusHistory',
+    'django_redis'
 
 ]
 
@@ -159,6 +161,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/0",  # DB index 1
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 
 # Internationalization

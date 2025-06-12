@@ -7,6 +7,7 @@ validation for the fields and methods for creating and updating Delivery objects
 from rest_framework import serializers
 from Delivery.models import Delivery
 from Courier.serializer import CourierSerializer
+from DeliveryStatusHistory.serializer import DeliveryStatusHistorySerializer
 
 
 class DeliverySerializer(serializers.ModelSerializer):
@@ -16,12 +17,12 @@ class DeliverySerializer(serializers.ModelSerializer):
     as well as validation and creation methods.
     """
     courier = CourierSerializer(read_only=True)
+    histories = DeliveryStatusHistorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Delivery
         fields = '__all__'
-        read_only_fields = ('id', 'created_at', 'updated_at', 'pickup_time')
-
+        read_only_fields = ('id', 'created_at', 'updated_at', 'histories')
 
     def create(self, validated_data):
         """

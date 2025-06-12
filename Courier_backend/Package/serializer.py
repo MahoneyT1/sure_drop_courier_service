@@ -8,8 +8,9 @@ validation for the fields and methods for creating and updating Package objects.
 from rest_framework import serializers
 from Package.models import Package
 from Delivery.serializer import DeliverySerializer
-from Location.serializer import LocationSerializer
+from DeliveryStatusHistory.serializer import DeliveryStatusHistorySerializer
 from User.serializer import UserSerializer
+from Receipt.serializer import ReceiptSerializer
 
 
 class PackageSerializer(serializers.ModelSerializer):
@@ -19,22 +20,20 @@ class PackageSerializer(serializers.ModelSerializer):
     as well as validation and creation methods.
     """
     deliveries = serializers.SerializerMethodField(read_only=True)
-    location = serializers.SerializerMethodField()
     user = UserSerializer(read_only=True)
+    delivery_history = DeliveryStatusHistorySerializer(source='delivery.histories', many=True, read_only=True)
+    receipt = ReceiptSerializer(read_only=True)
+
 
     class Meta:
         model = Package
         fields = '__all__'
-        read_only_fields = ('id', 'created_at', 'updated_at', 'user')
+        read_only_fields = ('id', 'created_at', 'updated_at', 'user', 'delivery_history', 'receipt')
 
     def get_deliveries(self, obj):
         # Implement logic to return deliveries here
         return DeliverySerializer(obj.deliveries.all(), many=True).data
-
-    def get_location(self, obj):
-        # Implement logic to return deliveries here
-        return LocationSerializer(obj.deliveries.all(), many=True).data
-
+    
     def create(self, validated_data):
         """
         Create a new Package object with the validated data.
