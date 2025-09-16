@@ -22,3 +22,7 @@ __pycache__/
 # Ignore Django secret key file if applicable
 
 .env# Ignore environment variables file
+
+.gitignore
+# Ignore this gitignore file itself
+
