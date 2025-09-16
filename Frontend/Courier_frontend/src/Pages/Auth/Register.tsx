@@ -52,7 +52,6 @@ const Register: React.FC =() => {
     // handle onSubmit function
     const handleSub = async (data: FormType) => {
 
-        e.
         console.log("These are submitted by form");
         
 
@@ -65,8 +64,14 @@ const Register: React.FC =() => {
           if (response.status === 201 ) {
               setUserCreationSuccess(true);
               // throw or alert the user of a success
-              toast.success("Successfully created user")
-              navigate('/login')
+              toast.success("Successfully created user",
+                {
+                  // navigate back to login page after 2 seconds
+                  onClose: ()=> navigate('/login'),
+                  autoClose: 2000,
+                }
+              )
+              
           }
         } catch (error) {
           if (axios.isAxiosError(error)) {
