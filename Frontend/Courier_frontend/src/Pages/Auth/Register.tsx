@@ -5,6 +5,7 @@
  */
 
 import React, { useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form"
 import { User, Mail, PhoneCallIcon, LockIcon } from "lucide-react";
 import { zodResolver }from '@hookform/resolvers/zod'
@@ -40,6 +41,7 @@ const Register: React.FC =() => {
     const [userCreationError, setUserCreationError] = useState("");
 
     // set up the form object
+    const navigate = useNavigate();
     const { 
         register,
         handleSubmit,
@@ -49,7 +51,10 @@ const Register: React.FC =() => {
 
     // handle onSubmit function
     const handleSub = async (data: FormType) => {
+
+        e.
         console.log("These are submitted by form");
+        
 
         const baseUrl = 'http://localhost:8000/api/v1/auth/user/register/';
         
@@ -61,6 +66,7 @@ const Register: React.FC =() => {
               setUserCreationSuccess(true);
               // throw or alert the user of a success
               toast.success("Successfully created user")
+              navigate('/login')
           }
         } catch (error) {
           if (axios.isAxiosError(error)) {
@@ -209,9 +215,9 @@ const Register: React.FC =() => {
               {errors.confirm_password && <p className='text-red-500 '>{errors.confirm_password.message} </p>}
               
               <button type='submit'
-                className='bg-green-500 p-2 mt-5 rounded w-full active:scale-95  text-white'
+          className='bg-green-500 p-2 mt-5 rounded w-full active:scale-95  text-white disabled:bg-gray-400 disabled:cursor-not-allowed'
                 disabled={isSubmitting}>
-                submit
+                {isSubmitting ? "Creating account..." : "Create Account"}
               </button>
         </form>
     </section>

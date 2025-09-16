@@ -1,5 +1,5 @@
 from django.db import models
-from Courier_backend.models.base import BaseModel
+from core.models.base import BaseModel
 from User.models import User
 from Package.models import Package
 

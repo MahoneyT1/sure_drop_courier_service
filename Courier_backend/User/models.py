@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import models
 from uuid import uuid4
-from Courier_backend.models.base import BaseModel
+from core.models.base import BaseModel
 
 # user custom manger(manages the creation of user objects)
 class CustomUserManager(BaseUserManager):

@@ -23,11 +23,8 @@ class CreateUserView(APIView):
     def post(self, request):
         """creates a user """
 
-        # deserialize data from the request object
-        print(request.data)
-        
+        # deserialize data from the request object        
         serializer = UserSerializer(data=request.data)
-        
 
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -77,7 +74,7 @@ class UserDetailsView(APIView):
             {"error_message": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST )
 
-    def delete(self, pk, request):
+    def delete(self, request, pk=None):
         """deletes a user by pk
         """
         try:
@@ -121,6 +118,11 @@ class CustomTokenObtainView(TokenObtainPairView):
             access_token = response.data.get('access')
             refresh_token = response.data.get('refresh')
 
+            data = {
+                'message': "successfully logged in",
+                'status': status.HTTP_200_OK,
+            }
+
             # set cookies
             response.set_cookie(
                 "access_token", access_token,
@@ -140,6 +142,12 @@ class CustomTokenObtainView(TokenObtainPairView):
             del response.data['access']
             del response.data['refresh']
 
+            return response
+        else:
+            response.data = {
+                'message': 'Invalid credentials',
+                'status': status.HTTP_401_UNAUTHORIZED
+            }
             return response
 
 
@@ -203,6 +211,14 @@ class VerifyLoginState(APIView):
 
     def get(self, request):
         token = request.COOKIES.get('access_token')
+
+        if not token:
+            return Response(
+                { "is_authenticated": False,
+                  "message": "user is not authenticated"
+                }, status=status.HTTP_401_UNAUTHORIZED
+            )
+
         return Response(
             { "is_authenticated": True,
               "user": {
