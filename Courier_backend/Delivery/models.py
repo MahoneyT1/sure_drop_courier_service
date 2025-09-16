@@ -1,7 +1,7 @@
 from django.db import models
 from Package.models import Package
 from Courier.models import Courier
-from Courier_backend.models.base import BaseModel
+from core.models.base import BaseModel
 from DeliveryStatusHistory.models import DeliveryStatusHistory
 
 

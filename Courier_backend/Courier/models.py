@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from Courier_backend.models.base import BaseModel
+from core.models.base import BaseModel
 
 
 class Courier(BaseModel):

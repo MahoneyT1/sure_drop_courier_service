@@ -7,26 +7,53 @@ from User.models import User
 
 
 class UserSerializer(ModelSerializer):
-    """serializes user objec to python types
+    """serializes user object to python types
     """
+    confirm_password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'full_name', 'is_active', 
+        fields = ['id', 'email', 'password', 'confirm_password', 'full_name', 'is_active', 
                     'is_staff', 'phone_number', 'address', 'role']
 
         extra_kwargs = {
-            'password': { "write_only": True }
+            'email': {'required': True }, 
+            'password': { "write_only": True, 'min_length': 6, 'required': True },
+            'full_name': {'required': True },
+            'confirm_password': {'required': True },
         }
+
+    def validate_email(self, value):
+        """validates email field
+        """
+        if value is None:
+            raise serializers.ValidationError("email must be provided")
+
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("email already exists")
+        return value
+
+    def validate(self, data):
+        """validates password and confirm password
+        """
+        password = data['password']
+        confirm_password = data.pop('confirm_password', None)
+
+        if password != confirm_password:
+            raise serializers.ValidationError("passwords do not match")
+
+        return data
 
     def create(self, validated_data):
         """Methods that creates user object with serialer class"""
-        validated_data.pop('confirm_password', None)
-        email = validated_data.get('email')
-
-        if not email:
-            raise serializers.ValidationError("email must be provided")
         
-        return User.objects.create(**validated_data)
+        email = validated_data.get('email')
+        password = validated_data.pop('password')
+
+        user = User.objects.create(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
     
     def update(self, instance, validated_data):
         """Updates existing user with validated data
