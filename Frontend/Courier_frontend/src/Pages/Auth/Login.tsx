@@ -2,10 +2,9 @@
  * login page.
  */
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import Button from '../../component/Button';
 import axios from 'axios';
 import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,7 +21,7 @@ const Login: React.FC = ()=> {
     const { 
         handleSubmit, 
         register, 
-        formState : { errors,  }
+        formState : { errors, isSubmitting, isSubmitSuccessful }
         } = useForm<LoginProps>();
 
     const Auth = useContext(AuthContext);
@@ -39,10 +38,14 @@ const Login: React.FC = ()=> {
             const response = await axios.post(baseUrl, formData, { withCredentials: true});
 
             if (response.status === 200) {
-                toast.success("Successfully logged in");
+                toast.success("Successfully logged in", 
+                    { onClose: () => navigator('/', { replace: true }),
+                     autoClose: 2000
+                    });
+                }
+                // set the isAuthenticated to true in the context
                 Auth?.setIsAuthenticated(true);
-                navigator('/', { replace: true })
-            }
+            
         } catch (err) {
             toast.error("error occured!");
         }
@@ -79,8 +82,14 @@ const Login: React.FC = ()=> {
                 {errors.password && <p className='text-red-500 '>{errors.password.message} </p>}
 
                 <div className='mt-7 w-full'>
-                    <Button buttonName='Log in' className='p-3 border bg-green-500
-                     text-white rounded-lg w-full text-lg' />
+                    <button 
+                        type='submit'
+                        disabled={ isSubmitting } 
+                        className='p-3 border bg-green-500
+                        text-white rounded-lg w-full text-lg disabled:opacity-50 disabled:cursor-not-allowed'>
+                            { isSubmitting ? 'Logging in...' : 'Login' }
+                            { isSubmitSuccessful && 'Login successful!' }
+                     </button>
                 </div>
 
                 <div className='mt-9 lg:text-center'>

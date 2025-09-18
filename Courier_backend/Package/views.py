@@ -25,7 +25,6 @@ from Receipt.models import Receipt
 from Receipt.serializer import ReceiptSerializer
 from DeliveryStatusHistory.models import DeliveryStatusHistory
 from DeliveryStatusHistory.serializer import DeliveryStatusHistorySerializer
-from django.template.loader import render_to_string
 from rest_framework.exceptions import ValidationError
 from django.db.models import Prefetch
 from django.utils.decorators import method_decorator
@@ -60,113 +59,17 @@ class PackageListCreateView(ListCreateAPIView):
             Handle POST requests to create a new Package object.
         """
         # create a package
-        try:
-            delivery_type = request.data.pop('delivery_type')
-            serializerPackage = PackageSerializer(data=request.data, context={ 'request': request })
-            serializerPackage.is_valid(raise_exception=True)
-            package = serializerPackage.save(user=request.user)
+        serializer = PackageSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        package = serializer.save()
 
-            # now search for available courier to handle each shipment
-            assign_courier = Courier.objects.filter(available=True).first()
-
-            if assign_courier:
-                # create a delivery and assign courier and package in it
-
-                pickup_date = serializerPackage.validated_data.get('pickup_date')
-               
-                try:
-                    # create a delivery and to track both courier and the package
-                    delivery = Delivery.objects.create(
-                        courier=assign_courier,
-                        package=package,
-                        delivery_type=delivery_type,
-                        estimated_delivery_date=pickup_date,
-                        delivery_address=serializerPackage.validated_data.get('recipient_address'),
-                    )
-                    
-                    serialized_delivery = DeliverySerializer(delivery)
-
-                    # create a location
-                    try:
-                        delivery_history =  DeliveryStatusHistory.objects.create(
-                            delivery=delivery,
-                            status='created',
-                        )
-                        delivery_history = delivery_history.save()
-                        serialized_delivery_history =  DeliveryStatusHistorySerializer(delivery_history)
-                    except Exception as e:
-                        print(str(e))
-                        return Response(
-                            { 'error': str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                        )
-
-                    # create Receipt
-                    try:
-                        receipt = Receipt.objects.create(
-                            package=package,
-                            amount=2000,
-                            )
-                        try:
-                            # render a html template in the attribute of the created Receipt
-                            html_string = render_to_string('receipt.html', {'receipt': receipt})
-                            receipt.html_content = html_string
-                            receipt.save()
-
-                        except Exception as e:
-                            traceback.print_exc()
-                            return Response(
-                                {
-                                    "Error": "error occured"
-                                }, 
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                            )
-                        
-                        serializerPackage = PackageSerializer(package, context={'request': request})
-                        serialized_receipt = ReceiptSerializer(receipt, context={'request': request})
-                        return Response(
-                             {
-                                "success": "successfully shipped your Package",
-                                "package": serializerPackage.data,
-                                'receipt': serialized_receipt.data,
-                            },
-                            status=status.HTTP_201_CREATED
-                        )
-                    except Exception as e:
-                        return Response(
-                            {
-                                "Error": "error occured"
-                            }, 
-                            status=status.HTTP_400_BAD_REQUEST
-                        )
-                except Exception as e:
-                    print(str(e))
-                    return Response(
-                        {
-                            "Error": "error occured"
-                        }, 
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-            else:
-                return Response({"Error": "no courier found"}, status=status.HTTP_404_NOT_FOUND)
-
-        except ValidationError as ve:
-            print("Validation Error:", ve.detail)
-            return Response(
-                {
-                    "errors": ve.detail
-                }, status=status.HTTP_400_BAD_REQUEST
+        return Response(
+            PackageSerializer(
+                package, 
+                context={'request': request}).data, 
+                status=status.HTTP_201_CREATED
             )
-
-        except Exception as e:
-            print(str(e))
-            return Response(
-                {
-                    "error": "error serializing data"
-                }, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
+       
 
 class PackageRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     """
@@ -195,6 +98,7 @@ class PackageRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
         try:
             instance = self.get_object()
             serializer = self.get_serializer(instance)
+            print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         except Package.DoesNotExist:
