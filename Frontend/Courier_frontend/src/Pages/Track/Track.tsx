@@ -34,7 +34,7 @@ const Track: React.FC = ()=> {
     const { id } = data;
       try { 
         const response = await axios.get(
-          `${baseUrl}/packages/${id}/`, { withCredentials: true });
+          `${baseUrl}packages/${id}/`, { withCredentials: true });
 
         const packageData = await response.data;
         navigate(`/package-details`, { state: {package: packageData }});

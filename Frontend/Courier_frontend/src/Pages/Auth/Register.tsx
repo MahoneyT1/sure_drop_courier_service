@@ -83,7 +83,7 @@ const Register: React.FC =() => {
           }
           else { 
             setUserCreationError("An unknown error occured")
-            toast.error('An unknown error occured')
+            toast.error("An unknown error occured")
           }
         }
       

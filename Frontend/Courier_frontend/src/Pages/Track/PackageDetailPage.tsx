@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Locate, Calendar, Package, Truck, User,
   Bell, PhoneIncoming, CheckCircle, Navigation,
-  AlignCenter
 } from 'lucide-react';
 import "./Track.css";
 import trackBackground from "../../assets/trackBackground.png"
@@ -66,7 +65,7 @@ const PackageDetailPage: React.FC = () => {
               </span>
 
               <div className='col-span-1'>
-                <p className=' text-primary font-bold'>Shipping Type</p>
+                <p className=' text-primary font-bold'>Delivery Type</p>
                 <span className='text-sm text-green-700 font-bold'>{deliveryItem.delivery_type}</span>
               </div>
 

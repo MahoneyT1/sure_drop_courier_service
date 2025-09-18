@@ -10,6 +10,9 @@ class Package(BaseModel):
         Package model that represents a package object.
         It contains fields for the package details and methods for calculating the delivery cost.
     """
+
+
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='packages')
     recipient_name = models.CharField(max_length=255, null=False, blank=False)
     recipient_phone_number = models.CharField(max_length=20, null=False, blank=False)
