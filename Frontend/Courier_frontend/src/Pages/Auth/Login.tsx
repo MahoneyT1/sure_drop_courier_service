@@ -21,7 +21,7 @@ const Login: React.FC = ()=> {
     const { 
         handleSubmit, 
         register, 
-        formState : { errors, isSubmitting, isSubmitSuccessful }
+        formState : { errors, isSubmitting, isSubmitted }
         } = useForm<LoginProps>();
 
     const Auth = useContext(AuthContext);
@@ -84,11 +84,10 @@ const Login: React.FC = ()=> {
                 <div className='mt-7 w-full'>
                     <button 
                         type='submit'
-                        disabled={ isSubmitting } 
+                        disabled={ isSubmitting || isSubmitted } 
                         className='p-3 border bg-green-500
                         text-white rounded-lg w-full text-lg disabled:opacity-50 disabled:cursor-not-allowed'>
                             { isSubmitting ? 'Logging in...' : 'Login' }
-                            { isSubmitSuccessful && 'Login successful!' }
                      </button>
                 </div>
 

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import "./Track.css";
 import trackBackground from "../../assets/trackBackground.png"
+import { toast } from 'react-toastify';
 
 
 const PackageDetailPage: React.FC = () => {
@@ -16,11 +17,20 @@ const PackageDetailPage: React.FC = () => {
 
   // use useEffect to redirect to the track page if no data is passed
   useEffect((): any => {
-    if (!packageData) {
+    try {
+      if (!packageData) {
+        navigate('/track');
+      };
+
+    } catch (err) {
+      toast.error("No package data found. Please enter a valid tracking ID.");
       navigate('/track');
-    };
+    }
+
 
   }, [packageData, navigate]);
+
+  console.log(packageData);
 
   return (
     <section
@@ -46,12 +56,13 @@ const PackageDetailPage: React.FC = () => {
           <div>
             <p
               className='text-primary text-sm font-bold leading-1.5'>
-              I.D  <span className='text-green-700 text-sm font-semibold '> <br /> {packageData.id} </span></p>
+              I.D  <span className='text-green-700 text-sm font-semibold '> <br /> {packageData?.id} </span></p>
           </div>
 
         </div>
 
-        {packageData.deliveries.map((deliveryItem: any, deliveryIndex: number) => (
+        { packageData?.deliveries && packageData?.deliveries?.length > 0 ? ( 
+          packageData?.deliveries?.map((deliveryItem: any, deliveryIndex: number) => (
           <div key={deliveryIndex} className='min-h-[250vh]'>
 
        
@@ -234,13 +245,13 @@ const PackageDetailPage: React.FC = () => {
                     </div>
                   <div className='box'></div>
                 </div>
-          </div>
+            </div>
           
-        </div>
-        
-    
-          ))}
-
+          </div>
+          ))
+        ) : (
+          <div>No delivery information available.</div>
+        )}
       </div>
     </section>
   )

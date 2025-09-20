@@ -1,16 +1,16 @@
-import React, { useEffect, useState, useContext, useNavigation } from 'react'
+import React, { useState, useContext } from 'react'
 import { Menu, X } from 'lucide-react';
-import suredrop from "../../assets/newLogo.png";
+import suredrop from "../../assets/updatedLogo.png";
 import {  Link, useNavigate } from 'react-router-dom';
 import Button from '../Button';
 import { AuthContext } from "./ToggleLoginLogoutButton";
-import axios from "axios";
 import 'react-toastify/dist/ReactToastify.css';
+import axiosInstance from '../../Utils/AxiosInstance';
 
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const Auth = useContext(AuthContext);
     const navigateTo = useNavigate();
@@ -19,7 +19,8 @@ const Navbar: React.FC = () => {
 
     const handleLogout = async () => {
 
-        const res = await axios.post('http://localhost:8000/api/v1/logout/', {}, { withCredentials: true });
+        const res = await axiosInstance.post('logout/',
+            {}, { withCredentials: true });
 
         try {
             if (res.status === 200 ) {
@@ -38,7 +39,7 @@ const Navbar: React.FC = () => {
 
         <div className="mx-auto md:px-6 flex justify-between items-center">
             {/* logo */}
-            <img className='w-16 ' src={suredrop} alt="logo-image" />
+            <img className='w-16 text-white' src={suredrop} alt="logo-image" />
             
             {/* Destop Navigation */}
             <nav className='hidden md:flex space-x-6 items-center' aria-label='primary navigation'>
@@ -47,11 +48,13 @@ const Navbar: React.FC = () => {
                     <li ><Link className='hover:text-gray-300' to="/about">About</Link></li>
                     <li ><Link className='hover:text-gray-300' to="/contact">Contact</Link></li>
                     <li ><Link className='hover:text-yellow-300' to="/service">Service</Link></li>
+
                     <li ><Link className='hover:text-yellow-300' to="/track">Track</Link></li>
+                      <li ><Link className={`hover:text-yellow-300 p-2 rounded font-bold ${Auth?.isAuthenticated? 'bg-green-500 to-green-500' : ''}`} to="/create-shipment">Create Package</Link></li>
                 </ul>
                 
                 {Auth?.isAuthenticated ? (
-                    <Button buttonName='logout' className='bg-green-500 p-1 rounded font-bold'
+                    <Button buttonName='logout' className='bg-primary p-1 rounded font-bold'
                     onClickFunc={async ()=> handleLogout()} />
                 ): (
                     <Button buttonName='login' className='bg-green-500 to-green-500 p-2 rounded font-bold'
@@ -75,17 +78,19 @@ const Navbar: React.FC = () => {
                 <nav id='mobile-menu' className='md:hidden  '>
                     <ul className='flex flex-col items-center p-4 gap-3'>
                         <li><Link className='hover:text-yellow-300 py-1 ' to="/">Home</Link></li>
-                          <li><Link className='hover:text-yellow-300 py-1 ' to="/about">About</Link></li>
-                          <li><Link className='hover:text-yellow-300 py-1 ' to="/contact">Contact</Link></li>
+                        <li><Link className='hover:text-yellow-300 py-1 ' to="/about">About</Link></li>
+                        <li><Link className='hover:text-yellow-300 py-1 ' to="/contact">Contact</Link></li>
                         <li><Link className='hover:text-yellow-300 py-1 ' to="/service">Service</Link></li>
-                          <li><Link className='hover:text-yellow-300 py-1  ' to="/track">Track</Link></li>
-                          {Auth?.isAuthenticated ? (
-                              <Button buttonName='logout' className='bg-green-500 p-1 rounded font-bold'
-                                  onClickFunc={async () => handleLogout()} />
-                          ) : (
-                              <Button buttonName='login' className='bg-green-500 to-green-500 p-2 rounded font-bold'
-                                  linkUrl='/login' />
-                          )}
+                        <li><Link className='hover:text-yellow-300 py-1  ' to="/track">Track</Link></li>
+                        <li ><Link className='hover:text-yellow-300 bg-green-500 to-green-500 p-2 rounded font-bold' to="/create-shipment">Create Package</Link></li>
+
+                        {Auth?.isAuthenticated ? (
+                            <Button buttonName='logout' className='bg-red-500 p-1 rounded font-bold'
+                                onClickFunc={async () => handleLogout()} />
+                        ) : (
+                            <Button buttonName='login' className='bg-green-500 to-green-500 p-2 rounded font-bold'
+                                linkUrl='/login' />
+                        )}
                     </ul>
                    
                 </nav>

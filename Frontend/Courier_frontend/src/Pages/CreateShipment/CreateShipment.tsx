@@ -4,6 +4,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../component/Navbar/ToggleLoginLogoutButton';
 import { useDownloadReceipt } from './utils'
+import axiosInstance from '../../Utils/AxiosInstance';
 
 
 interface CreateShipmentTypes {
@@ -26,34 +27,29 @@ const CreateShipment: React.FC = () => {
     // use the context
     const Auth = useContext(AuthContext);
 
-    // create axios instance or config
-    const createShipmentApi = axios.create({
-        baseURL: 'http://localhost:8000/api/v1/',
-        withCredentials: true,
-    });
-
     // handle the create shipment and filter the require and also handle the logics
     const handleOnSubmit = async (data: CreateShipmentTypes)=> {
         
         if ( Auth?.isAuthenticated === true ) {
-        try {
-            const response = await createShipmentApi.post('package/', data);
+            try {
+                const response = await axiosInstance.post('package/', data);
 
-            if (response.status === 201 ) {
-                toast.success('Successfully created a package');
+                if (response.status === 201 ) {
+                    toast.success('Successfully created a package');
 
-                // call the download receipt function
-                await downloadReceipt(response.data.receipt.id);
+                    // call the download receipt function
+                    await downloadReceipt(response.data.receipt.id);
+                }
+ 
+            } catch(error) {
+                console.error("Shipment creation failed:", error);
             }
-
-       } catch(err) {
-        toast.error('error occured, failed to create package');
-       };
+        }
     }
         
-}
+
     return (
-        <section className='w-full min-h-screen bg-primary py-15'>
+        <section className='w-full min-h-screen bg-primary py-10'>
             {receipt && (
                 <div className='text-white text-center p-4 bg-white '>
                     <p className='pb-3 text-2xl lg:text-2xl text-primary font-bold'>Your receipt is ready</p>
@@ -70,7 +66,7 @@ const CreateShipment: React.FC = () => {
                 <h1 className='text-green-500 text-4xl text-center font-bold 
                 xl:text-5xl '>Ship Your package.</h1>
 
-                <p className='text-white mt-15 text-lg  mx-auto text- max-w-2xl text-center'>Enter your shipment details and we'll handle the rest. Fast
+                <p className='text-white mt-5 text-lg  mx-auto text- max-w-2xl text-center'>Enter your shipment details and we'll handle the rest. Fast
                     , secure, and reliable delivery.
                 </p>
             </div>
@@ -79,7 +75,7 @@ const CreateShipment: React.FC = () => {
                 <ShipmentForm onSubmit={handleOnSubmit}/>
             </div>
         </section>
-  )
+    )
 }
 
 export default CreateShipment;

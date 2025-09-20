@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import Button from '../../component/Button';
 import { cardPropData } from './TrackData';
 import { useForm } from 'react-hook-form';
-import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axiosInstance from '../../Utils/AxiosInstance';
 
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -33,8 +33,8 @@ const Track: React.FC = ()=> {
 
     const { id } = data;
       try { 
-        const response = await axios.get(
-          `${baseUrl}packages/${id}/`, { withCredentials: true });
+        const response = await axiosInstance.get(
+          `packages/${id}/`, { withCredentials: true });
 
         const packageData = await response.data;
         navigate(`/package-details`, { state: {package: packageData }});

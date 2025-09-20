@@ -1,0 +1,19 @@
+services:
+- type: web
+  name: courier-backend
+  env: python
+  buildCommand: "./Courier_backend/manage.py collectstatic --noinput"
+  startCommand: "gunicorn core.wsgi:application --bind 0.0.0:$PORT"
+  envVars:
+- key: DJANGO_SETTINGS_MODULE
+  value: core.settings.production
+- key: PYTHON_VERSION
+  value: 3.12.3
+- key: SENDGRID_API_KEY
+  sync: false
+- key: DATABASE_URL
+
+  postDeployCommand: "./Courier_backend/manage.py migrate --noinput"
+  buildFilter:
+    paths:
+      -Courier_backend/**

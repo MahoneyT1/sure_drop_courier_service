@@ -12,7 +12,7 @@ class PackageAdmin(admin.ModelAdmin):
     """
     form = PackageForm
 
-    list_display = ['recipient_name', 'recipient_phone_number', 
+    list_display = ['id', 'recipient_name', 'recipient_phone_number', 
                     'recipient_address', 'description', 'pickup_date',
                     'weight', 'height', 'length', 'width', 'created_at']
 
@@ -32,22 +32,23 @@ class PackageAdmin(admin.ModelAdmin):
         """Override save_model to set the user field automatically."""
         obj.user = request.user
 
+        super().save_model(request, obj, form, change)
+
         delivery_type = form.cleaned_data.get('delivery_type', 'domestic')
         
         delivery_address = form.cleaned_data.get('delivery_address', '')
         delivery_date = form.cleaned_data.get('pickup_date', None)
 
-        if not obj.deliveries and hasattr(obj, 'create_delivery'):
+        if not obj.deliveries.exists() and hasattr(obj, 'create_delivery'):
             delivery = obj.create_delivery(
                 delivery_type=delivery_type,
                 delivery_address=delivery_address,
-                delivery_data=delivery_date
+                delivery_date=delivery_date
             )
 
         if form.errors:
             for field, errors in form.errors.items():
                 for error in errors:
                     print(f"Error in '{field}': {error}")
-        super().save_model(request, obj, form, change)
 
 admin.site.register(Package, PackageAdmin)

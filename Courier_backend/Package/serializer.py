@@ -36,7 +36,7 @@ class PackageSerializer(serializers.ModelSerializer):
     It defines the fields to be serialized and deserialized,
     as well as validation and creation methods.
     """
-    deliveries = serializers.SerializerMethodField(read_only=True)
+    deliveries = DeliverySerializer(many=True, read_only=True)
     user = UserSerializer(read_only=True)
     delivery_history = DeliveryStatusHistorySerializer(source='delivery.histories', many=True, read_only=True)
     receipt = ReceiptSerializer(read_only=True)

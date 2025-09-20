@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import "./HeroSection.css";
 import { API_BASE_URL } from '../../config';
@@ -43,15 +43,17 @@ const HeroSection: React.FC = () => {
         md:w-[600px] lg:w-[900px] xl:md-[76vw]'>
         <h1 className='text-white font-Inter backdrop-blur
           text-drive-from-left lg:text-5xl'>
-            Reliable. Fast. Fask-Link – Delivering with Care <br />
-            Every Time
+            Reliable, Fask-Link – Delivering Services. <br />
+            Delivering with Care, Every Time !!
         </h1>
 
-      <h6 className=' text-2xl text-white backdrop-blur-2xl
+      {/* <h6 className=' text-2xl text-white backdrop-blur-2xl
             text-drive-from-right lg:text-4xl '>Track your parcel/Package here
-      </h6>
+      </h6> */}
+
 
         <div className='mt-9 py-3'>
+
          
           <form onSubmit={handleSubmit(handleTrack)}
               className='flex justify-center items-center gap-2'>
@@ -60,7 +62,7 @@ const HeroSection: React.FC = () => {
                 className='bg-white rounded-lg text-lg  
                 ps-4 py-0 text-black relative md:w-[400px]
                   lg:p-5 '
-                name="track" type="text" placeholder='Track Id'
+            name="track" type="text" placeholder='Tracking number (  46fb9026-3623-406e-*******)'
                 />
                 { errors.track && 
                   <p className='text-white-300 '>{errors.track.message} </p>}
