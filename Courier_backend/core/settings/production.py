@@ -5,6 +5,8 @@ import os
 
 DEBUG = False
 
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 ALLOWED_HOSTS = ["fastlink-backend.onrender.com", "www.yourdomain.com"]
 
 # Secure DB (Postgres, MySQL, etc.)
@@ -45,4 +47,4 @@ SECURE_HSTS_SECONDS = 3600
 
 MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware', 
-]
+] + MIDDLEWARE
