@@ -1,20 +1,20 @@
 from .base import *
 
+DEBUG = True
+ALLOWED_HOSTS = []
 
-ALLOWED_HOSTS = [
-    "localhost",
-]
+# Local SQLite DB
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 
-# CORS settings
+# Local CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
-
-DEBUG=True
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.MD5PasswordHasher',
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
 ]
-

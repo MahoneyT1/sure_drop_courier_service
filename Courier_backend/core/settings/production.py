@@ -1,50 +1,40 @@
 from .base import *
 import dj_database_url
-import os
-
 
 DEBUG = False
 
-
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
 ALLOWED_HOSTS = ["fastlink-backend.onrender.com", "www.yourdomain.com"]
 
-# Secure DB (Postgres, MySQL, etc.)
+# PostgreSQL (Render)
 DATABASES = {
     "default": dj_database_url.config(
-        default= os.getenv("DATABASE_URL"),
+        default=os.getenv("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=True
-        )
+        ssl_require=True,
+    )
 }
 
-# STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
+# Render CORS / CSRF
+CORS_ALLOWED_ORIGINS = [
+    "https://fastlink-frontend.onrender.com",
+]
 CSRF_TRUSTED_ORIGINS = [
-    "https://your-backend-service.onrender.com",
+    "https://fastlink-backend.onrender.com",
     "https://www.yourdomain.com",
 ]
 
+# Security
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 3600
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Production email backend
+# Email (Sendgrid)
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "apikey"
 EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_API_KEY")
-
-# Security settings
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 3600
-
-
-MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
-] + MIDDLEWARE
