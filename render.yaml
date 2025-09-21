@@ -12,7 +12,8 @@ services:
   - key: SENDGRID_API_KEY
     sync: false
   - key: DATABASE_URL
-  postDeployCommand: "./Courier_backend/manage.py migrate --noinput"
+    sync: false
+  postDeployCommand: "python manage.py migrate --noinput"
   buildFilter:
     paths:
       -Courier_backend/**
