@@ -26,3 +26,4 @@ __pycache__/
 .gitignore
 # Ignore this gitignore file itself
 
+.env
