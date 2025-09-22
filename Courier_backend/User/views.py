@@ -127,15 +127,15 @@ class CustomTokenObtainView(TokenObtainPairView):
             response.set_cookie(
                 "access_token", access_token,
                 httponly=True,
-                secure=False,
-                samesite='Lax',
+                secure=True,
+                samesite=None,
                 max_age=7 * 24 * 60 * 60  # 7 days
                 )
             response.set_cookie(
                 "refresh_token", refresh_token,
                 httponly=True,
-                secure=False,
-                samesite='Lax',
+                secure=True,
+                samesite=None,
                 max_age=7 * 24 * 60 * 60  # 7 days
                 )
 
@@ -177,7 +177,7 @@ class CustomTokenRefreshView(TokenRefreshView):
                 "refresh_token",
                 new_access_token,
                 httponly=True,
-                samesite="strict",
+                samesite=None,
                 max_age=15 * 60
             )
             del res.data['access']

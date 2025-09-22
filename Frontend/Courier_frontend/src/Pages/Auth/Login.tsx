@@ -5,10 +5,11 @@
 import React, { useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthContext } from '../../component/Navbar/ToggleLoginLogoutButton';
+import { API_BASE_URL } from '../../config';
+import axiosInstance from '../../Utils/AxiosInstance';
 
 
 interface LoginProps {
@@ -31,11 +32,11 @@ const Login: React.FC = ()=> {
         console.log(formData);
 
 
-        const baseUrl = 'http://localhost:8000/api/v1/login/'
+        const url = 'login/'
 
         try {
             // make a post request with login details
-            const response = await axios.post(baseUrl, formData, { withCredentials: true});
+            const response = await axiosInstance.post(url, formData, { withCredentials: true});
 
             if (response.status === 200) {
                 toast.success("Successfully logged in", 
@@ -48,6 +49,7 @@ const Login: React.FC = ()=> {
             
         } catch (err) {
             toast.error("error occured!");
+            console.error(err);
         }
     };
 
