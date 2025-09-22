@@ -3,7 +3,7 @@ import dj_database_url
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["fastlink-backend.onrender.com", "www.yourdomain.com"]
+ALLOWED_HOSTS = ["https://sure-drop-courier-service.onrender.com"]
 
 # PostgreSQL (Render)
 DATABASES = {
@@ -16,11 +16,13 @@ DATABASES = {
 
 # Render CORS / CSRF
 CORS_ALLOWED_ORIGINS = [
-    "https://sure-drop-courier-service.onrender.com",
+    "sure-drop-courier-service.onrender.com",
+    "http://localhost:5173",
+
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://sure-drop-courier-service.onrender.com",
-    "https://www.yourdomain.com",
+    "http://localhost:5173",
 ]
 
 # Security
