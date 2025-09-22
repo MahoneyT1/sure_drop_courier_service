@@ -5,7 +5,7 @@ import os
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["https://sure-drop-courier-service.onrender.com"]
+ALLOWED_HOSTS = ["sure-drop-courier-service.onrender.com"]
 
 # PostgreSQL (Render)
 DATABASES = {
