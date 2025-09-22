@@ -16,10 +16,10 @@ DATABASES = {
 
 # Render CORS / CSRF
 CORS_ALLOWED_ORIGINS = [
-    "https://fastlink-frontend.onrender.com",
+    "https://sure-drop-courier-service.onrender.com",
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://fastlink-backend.onrender.com",
+    "https://sure-drop-courier-service.onrender.com",
     "https://www.yourdomain.com",
 ]
 
