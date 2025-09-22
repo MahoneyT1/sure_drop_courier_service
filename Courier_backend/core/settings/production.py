@@ -18,7 +18,7 @@ DATABASES = {
 
 # Render CORS / CSRF
 CORS_ALLOWED_ORIGINS = [
-    "sure-drop-courier-service.onrender.com",
+    "https://sure-drop-courier-service.onrender.com",
     "http://localhost:5173",
 
 ]
