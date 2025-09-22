@@ -1,5 +1,7 @@
 from .base import *
 import dj_database_url
+import os
+
 
 DEBUG = False
 
@@ -24,6 +26,28 @@ CSRF_TRUSTED_ORIGINS = [
     "https://sure-drop-courier-service.onrender.com",
     "http://localhost:5173",
 ]
+
+# Error logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",  # or INFO in production
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
 
 # Security
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
