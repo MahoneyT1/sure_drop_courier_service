@@ -3,6 +3,7 @@
 """
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from User.models import User
 
 
@@ -66,5 +67,53 @@ class UserSerializer(ModelSerializer):
 
         instance.save()
         return instance
+    
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """ Overiding the default token serializer to 
+    validate with email as the username
+    """
+
+    username_field = User.EMAIL_FIELD
+
+    def validate(self, attrs):
+        """validates the token with email and password
+        """
+        credentials = {
+            'email': attrs.get('email'),
+            'password': attrs.get('password')
+        }
+
+        user = User.objects.filter(email=credentials['email']).first()
+
+        if user is None:
+            raise serializers.ValidationError('No user with this email exists')
+        
+        else:
+            if not user.check_password(credentials['password']):
+                raise serializers.ValidationError('Incorrect password')
+
+        if credentials['email'] and credentials['password']:
+            from django.contrib.auth import authenticate
+
+            user = authenticate(**credentials)
+            if not user:
+                raise serializers.ValidationError('Invalid email or password.')
+
+            refresh = self.get_token(user)
+            access = refresh.access_token
+
+            # Add tokens to response data
+            data = {
+                'refresh': str(refresh),
+                'access': str(access),
+                'user': {
+                    'id': str(user.id),
+                    'email': user.email,
+                    'username': user.username,
+                }
+            }
+
+        return data 
 
 

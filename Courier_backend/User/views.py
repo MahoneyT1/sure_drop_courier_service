@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from .serializer import CustomTokenObtainPairSerializer
 
 
 # custom class imports
@@ -108,6 +109,7 @@ class UsersListView(APIView):
 class CustomTokenObtainView(TokenObtainPairView):
     """obtains view sets cookie to the browser
     """
+    serializer_class = CustomTokenObtainPairSerializer
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):

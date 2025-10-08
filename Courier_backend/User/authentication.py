@@ -2,12 +2,13 @@
     User authentication class
 """
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from .serializer import CustomTokenObtainPairSerializer
 
 
 class JWTCookieAuthentication(JWTAuthentication):
     """authenticate and validates user's tokens
     """
-
+    
     def authenticate(self, request):
         """authenticates login
         """
