@@ -74,7 +74,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     validate with email as the username
     """
 
-    username_field = User.EMAIL_FIELD
+    username_field = User.email
 
     def validate(self, attrs):
         """validates the token with email and password
