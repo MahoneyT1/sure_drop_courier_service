@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from .serializer import CustomTokenObtainPairSerializer
+from django.views.decorators.csrf import csrf_exempt
 
 
 # custom class imports
@@ -106,6 +107,8 @@ class UsersListView(APIView):
         except Exception as e:
             return Response({'error_message': str(e)}, status=status.HTTP_404_NOT_FOUND)
 
+
+@csrf_exempt
 class CustomTokenObtainView(TokenObtainPairView):
     """obtains view sets cookie to the browser
     """
