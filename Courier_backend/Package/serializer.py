@@ -117,3 +117,4 @@ class PackageSerializer(serializers.ModelSerializer):
         instance.length = validated_data.get('length', instance.length)
         instance.save()
         return instance
+

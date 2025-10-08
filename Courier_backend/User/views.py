@@ -108,7 +108,7 @@ class UsersListView(APIView):
 class CustomTokenObtainView(TokenObtainPairView):
     """obtains view sets cookie to the browser
     """
-    # permission_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         # obtain response object from the made request
