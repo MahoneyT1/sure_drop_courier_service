@@ -108,7 +108,6 @@ class UsersListView(APIView):
             return Response({'error_message': str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 
-@csrf_exempt
 class CustomTokenObtainView(TokenObtainPairView):
     """obtains view sets cookie to the browser
     """
