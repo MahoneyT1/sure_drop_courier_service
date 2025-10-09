@@ -73,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name', 'phone_number', 'username']
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return f'{self.id}'
