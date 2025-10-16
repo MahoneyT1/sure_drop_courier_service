@@ -11,9 +11,10 @@ const About:React.FC = () => {
   return (
     <section className='bg-white w-full min-h-[100vh] '>
         <div className='lg:px-80 text-center mt-8'>
-            <h1 className='text-5xl text-primary font-bold leading-[3.1rem]'>Delivering Trust, <br />
+            <div className='text-lg text-primary font-bold leading-[3.1rem]
+                md:text-5xl'>Delivering Trust, <br />
                <span className='text-green-500'>One Package at a Time</span> 
-            </h1>
+            </div>
             
             <h6 className='mt-7 text-lg text- text-center'>Since 2020, SureDrop has been revolutionizing the
                 courier industry with innovation and reliability.

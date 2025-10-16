@@ -40,7 +40,10 @@ class CustomUserManager(BaseUserManager):
 
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
-        return self.create_user(email=email, username=username, password=password, **extra_fields)
+        return self.create_user(
+            email=email, username=username, 
+            password=password, **extra_fields
+            )
     
 
  # function that generates uuid
@@ -73,7 +76,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         return f'{self.id} {self.username}'

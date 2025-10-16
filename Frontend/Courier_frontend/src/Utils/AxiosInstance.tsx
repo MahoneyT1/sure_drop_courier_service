@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
                 });
 
             } else if (status === 400) {
-                toast.error("Bad request! Please check your input.", {
+                toast.error( `${error.response?.data?.non_field_errors?.[0]}` , {
                     autoClose: 2000,
                 });
 

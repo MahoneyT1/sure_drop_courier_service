@@ -6,6 +6,8 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from User.models import User
 from django.contrib.auth import authenticate
+from rest_framework.exceptions import AuthenticationFailed
+
 
 
 class UserSerializer(ModelSerializer):
@@ -16,7 +18,7 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'password', 'confirm_password', 'full_name', 'is_active', 
-                    'is_staff', 'phone_number', 'address', 'role']
+                    'is_staff', 'phone_number', 'address', 'role', 'username']
 
         extra_kwargs = {
             'email': {'required': True }, 
@@ -52,6 +54,9 @@ class UserSerializer(ModelSerializer):
         email = validated_data.get('email')
         password = validated_data.pop('password')
 
+        if not email and not password:
+            raise serializers.ValidationError("email & password must be provided")
+        
         user = User.objects.create(**validated_data)
         user.set_password(password)
         user.save()
@@ -68,29 +73,39 @@ class UserSerializer(ModelSerializer):
 
         instance.save()
         return instance
-    
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    """ Overiding the default token serializer to 
-    validate with email as the username
+
+class LoginSerializer(serializers.Serializer):
+    """serializer for login view
     """
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
 
-    username_field = 'email'
-
-    def validate(self, attrs):
-        """validates the token with email and password
+    def validate(self, data):
+        """validates user login data
         """
+        # Ensure required fields are present
+        email = data.get('email')
+        password = data.get('password')
 
-        email = attrs.get('email'),
-        password = attrs.get('password')
+        errors = {}
+        if not email:
+            errors['email'] = ['This field is required.']
+        if not password:
+            errors['password'] = ['This field is required.']
+        if errors:
+            raise serializers.ValidationError(errors)
 
-        if not email and password:
-            raise serializers.validatationError("must include email and password")
+        # Pass request to authenticate in case auth backends need it
+        request = self.context.get('request') if hasattr(self, 'context') else None
 
-        user = authenticate(email=email, password=password)
+      
+        user = authenticate(request=request, email=email, password=password)
 
-        if not user:
-            raise serializers.ValidationError('Invalid email or password.')
+        if user is None:
+            raise serializers.ValidationError({'non_field_errors': ['User not found.']})
 
-        data = super().validate(attrs)
-        return data
+        if not getattr(user, 'is_active', True):
+            raise serializers.ValidationError({'non_field_errors': ['not an active user']})
+
+        return {"user": user }

@@ -7,9 +7,10 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
-from .serializer import CustomTokenObtainPairSerializer
 from django.views.decorators.csrf import csrf_exempt
-
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from .serializer import LoginSerializer, UserSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # custom class imports
 from User.models import User
@@ -108,104 +109,44 @@ class UsersListView(APIView):
             return Response({'error_message': str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 
-class CustomTokenObtainView(TokenObtainPairView):
+class LoginView(APIView):
     """obtains view sets cookie to the browser
     """
-    serializer_class = CustomTokenObtainPairSerializer
     permission_classes = [AllowAny]
+    authentication_classes = []
 
-    def post(self, request, *args, **kwargs):
-        # obtain response object from the made request
-        response = super().post(request, *args, **kwargs)
+    def post(self, request):
+        """ handles"""
+        serializer = LoginSerializer(data=request.data, context={'request': request})
 
-        if response.status_code == 200:
-            access_token = response.data.get('access')
-            refresh_token = response.data.get('refresh')
+        if serializer.is_valid():
+            user = serializer.validated_data.get('user')
 
-            data = {
-                'message': "successfully logged in",
-                'status': status.HTTP_200_OK,
-            }
+            if user is None:
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-            # set cookies
-            response.set_cookie(
-                "access_token", access_token,
-                httponly=True,
-                secure=True,
-                samesite=None,
-                max_age=7 * 24 * 60 * 60  # 7 days
-                )
-            response.set_cookie(
-                "refresh_token", refresh_token,
-                httponly=True,
-                secure=True,
-                samesite=None,
-                max_age=7 * 24 * 60 * 60  # 7 days
-                )
+            refresh = RefreshToken.for_user(user)
+            access = str(refresh.access_token)
 
-            del response.data['access']
-            del response.data['refresh']
+            response = Response({
+                "user": UserSerializer(user).data,
+                "message": "login successful"
+            }, status=status.HTTP_200_OK)
 
+            response.set_cookie(key='access_token', 
+                                value=access, httponly=True, 
+                                secure=False, samesite=None,
+                                max_age=15*60)
+            
+            response.set_cookie(key='refresh_token', 
+                                value=str(refresh), httponly=True, 
+                                secure=False, samesite=None,
+                                max_age=7*24*60*60
+                            )
             return response
-        else:
-            response.data = {
-                'message': 'Invalid credentials',
-                'status': status.HTTP_401_UNAUTHORIZED
-            }
-            return response
-
-
-class CustomTokenRefreshView(TokenRefreshView):
-    """refreshes the token and provide new access token
-    """
-
-    def post(self, request, *args, **kwargs):
-        # get the refresh-token from the request
-        refresh_token = request.COOKIES.get('refresh_token')
-
-        if not refresh_token:
-            return Response({
-                'error': 'No refresh token found!'
-            }, status=status.HTTP_401_UNAUTHORIZED)
-        
-        # add the refresh token to the request data
-        request.data['refresh_token'] = refresh_token
-
-        # get new access token
-        res = super().post(request, *args, **kwargs)
-
-        if res.status_code == 200:
-            new_access_token = res.data.get('access')
-
-            res.set_cookie(
-                "refresh_token",
-                new_access_token,
-                httponly=True,
-                samesite=None,
-                max_age=15 * 60
-            )
-            del res.data['access']
-        return res
-
-
-# logout view
-class Logout(APIView):
-    """Logs user out
-    """
-    permission_classes = [AllowAny]
-
-    def post(self, request, *args, **kwargs):
-        """send the token to be removed
-        """
-        print('User is', request.user)
-        
-
-        response = Response({"message": "logged out"}, status=status.HTTP_200_OK)
-
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
-
-        return response
+        return Response(serializer.errors, 
+                        status=status.HTTP_400_BAD_REQUEST
+                        )
 
 
 # verify login from frontend
@@ -231,3 +172,34 @@ class VerifyLoginState(APIView):
               }
             }
         )
+
+
+class LogoutView(APIView):
+    """logout user
+    """
+
+    def post(self, request):
+        """Makes a request to logout user
+        """
+        
+        refresh_token = request.COOKIES.get('refresh_token')
+
+        if refresh_token:
+            try:
+                refresh = RefreshToken(refresh_token)
+                refresh.blacklist()
+
+            except Exception as e:
+                return Response(
+                    {"error": f"An error occurred: {str(e)}"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        response = Response(
+            {"message": "logout successful"},
+            status=status.HTTP_200_OK
+        )
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+
+        return response
+

@@ -10,6 +10,7 @@ import axiosInstance from '../../Utils/AxiosInstance';
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isActive, setIsActive] = useState(false);
     // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const Auth = useContext(AuthContext);
@@ -43,14 +44,13 @@ const Navbar: React.FC = () => {
             
             {/* Destop Navigation */}
             <nav className='hidden md:flex space-x-6 items-center' aria-label='primary navigation'>
-                <ul className='flex space-x-15 text-lg'>
-                    <li><Link className='hover:text-gray-300' to="/">Home</Link></li>
+                <ul className='flex space-x-15 text-lg hover:border-white-300'>
+                    <li><Link className={`hover:text-gray-300 `} to="/">Home</Link></li>
                     <li ><Link className='hover:text-gray-300' to="/about">About</Link></li>
                     <li ><Link className='hover:text-gray-300' to="/contact">Contact</Link></li>
                     <li ><Link className='hover:text-yellow-300' to="/service">Service</Link></li>
 
                     <li ><Link className='hover:text-yellow-300' to="/track">Track</Link></li>
-                      <li ><Link className={`hover:text-yellow-300 p-2 rounded font-bold ${Auth?.isAuthenticated? 'bg-green-500 to-green-500' : ''}`} to="/create-shipment">Create Package</Link></li>
                 </ul>
                 
                 {Auth?.isAuthenticated ? (
@@ -77,12 +77,11 @@ const Navbar: React.FC = () => {
             {isOpen && (
                 <nav id='mobile-menu' className='md:hidden  '>
                     <ul className='flex flex-col items-center p-4 gap-3'>
-                        <li><Link className='hover:text-yellow-300 py-1 ' to="/">Home</Link></li>
+                        <li><Link className='hover:text-yellow-300 py-1 oncl' to="/">Home</Link></li>
                         <li><Link className='hover:text-yellow-300 py-1 ' to="/about">About</Link></li>
                         <li><Link className='hover:text-yellow-300 py-1 ' to="/contact">Contact</Link></li>
                         <li><Link className='hover:text-yellow-300 py-1 ' to="/service">Service</Link></li>
                         <li><Link className='hover:text-yellow-300 py-1  ' to="/track">Track</Link></li>
-                        <li ><Link className='hover:text-yellow-300 bg-green-500 to-green-500 p-2 rounded font-bold' to="/create-shipment">Create Package</Link></li>
 
                         {Auth?.isAuthenticated ? (
                             <Button buttonName='logout' className='bg-red-500 p-1 rounded font-bold'

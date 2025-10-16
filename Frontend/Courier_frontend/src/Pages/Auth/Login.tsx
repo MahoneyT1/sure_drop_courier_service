@@ -8,8 +8,8 @@ import { useForm } from 'react-hook-form';
 import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthContext } from '../../component/Navbar/ToggleLoginLogoutButton';
-import { API_BASE_URL } from '../../config';
 import axiosInstance from '../../Utils/AxiosInstance';
+// import { ReceiptRussianRuble } from 'lucide-react';
 
 
 interface LoginProps {
@@ -18,21 +18,26 @@ interface LoginProps {
 }
 
 const Login: React.FC = ()=> {
+
+    // create a navigation object
     const navigator = useNavigate();
+
+    // set up the form object
     const { 
         handleSubmit, 
-        register, 
-        formState : { errors, isSubmitting, isSubmitted }
+        register,
+        reset,
+        formState : { errors, isSubmitting }
         } = useForm<LoginProps>();
 
+    // access the AuthContext
     const Auth = useContext(AuthContext);
 
-
+    // function to handle login
     const handleLogin = async (formData: LoginProps)=> {
-        console.log(formData);
 
-
-        const url = 'login/'
+        // login url
+        const url = 'login/';
 
         try {
             // make a post request with login details
@@ -47,9 +52,12 @@ const Login: React.FC = ()=> {
                 // set the isAuthenticated to true in the context
                 Auth?.setIsAuthenticated(true);
             
-        } catch (err) {
-            toast.error("error occured!");
-            console.error(err);
+        } catch (err: any) {
+            toast.error("check your info or create an account !", {
+                autoClose: 2000});
+            reset();
+            Auth?.setIsAuthenticated(false);
+            navigator('/login', { replace: true } );
         }
     };
 
@@ -81,14 +89,19 @@ const Login: React.FC = ()=> {
                     { ...register('password', { required: "Password is required"})}
                     className='border-1 rounded-lg w-full p-2 mt-1' />
                 </div>
-                {errors.password && <p className='text-red-500 '>{errors.password.message} </p>}
+                {   errors.password && 
+                        <p className='text-red-500 '>
+                            {errors.password.message} 
+                        </p>
+                }
 
                 <div className='mt-7 w-full'>
                     <button 
                         type='submit'
-                        disabled={ isSubmitting || isSubmitted } 
+                        disabled={ isSubmitting } 
                         className='p-3 border bg-green-500
-                        text-white rounded-lg w-full text-lg disabled:opacity-50 disabled:cursor-not-allowed'>
+                        text-white rounded-lg w-full text-lg 
+                        disabled:opacity-50 disabled:cursor-not-allowed'>
                             { isSubmitting ? 'Logging in...' : 'Login' }
                      </button>
                 </div>
