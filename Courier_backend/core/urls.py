@@ -19,6 +19,10 @@ from django.urls import path, include
 from drf_yasg import openapi
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 
 schema_view = get_schema_view(
@@ -30,6 +34,19 @@ schema_view = get_schema_view(
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
+
+class HealthCheckView(APIView):
+    """Health check view to verify if the service is running
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """Handles GET requests for health check
+        """
+        return Response(
+            {"status": "Service is running smoothly."},
+            status=status.HTTP_200_OK
+        )
     
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,7 +56,7 @@ urlpatterns = [
     path('api/v1/', include('Courier.urls')),
     path('api/v1/', include('Location.urls')),
     path('api/v1/', include('Receipt.urls')),
-    path('/', include('User.urls')),
+    path('', HealthCheckView.as_view(), name='health-check'),
 
     # Swagger documentation URLs
     path('api/v1/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
