@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 // navigation object
 
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL_PRODUCTION,
     withCredentials: true,
     // ...other config
 });

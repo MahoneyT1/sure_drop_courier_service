@@ -14,8 +14,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
+import AxiosInstance from '../../Utils/AxiosInstance';
 
 
 // create a blueprint for the form data
@@ -52,15 +51,13 @@ const Register: React.FC =() => {
     // handle onSubmit function
     const handleSub = async (data: FormType) => {
 
-        console.log("These are submitted by form");
-        
-
-        const baseUrl = 'http://localhost:8000/api/v1/auth/user/register/';
+        // url to create user endpoint
+        const url = 'auth/user/register/';
         
         //make a post request to backend
         // send a post request with user new data
         try {
-          const response = await axios.post(baseUrl, data)
+          const response = await AxiosInstance.post(url, data)
           if (response.status === 201 ) {
               setUserCreationSuccess(true);
               // throw or alert the user of a success
