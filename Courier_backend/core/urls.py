@@ -38,7 +38,7 @@ schema_view = get_schema_view(
 class HealthCheckView(APIView):
     """Health check view to verify if the service is running
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         """Handles GET requests for health check
