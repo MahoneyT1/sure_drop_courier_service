@@ -39,6 +39,7 @@ urlpatterns = [
     path('api/v1/', include('Courier.urls')),
     path('api/v1/', include('Location.urls')),
     path('api/v1/', include('Receipt.urls')),
+    path('/', include('User.urls')),
 
     # Swagger documentation URLs
     path('api/v1/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
