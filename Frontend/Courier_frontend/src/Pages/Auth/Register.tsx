@@ -36,9 +36,6 @@ type FormType = z.infer<typeof FormSchema>
 
 // Register UI
 const Register: React.FC =() => {
-  const [userCreationSuccess, setUserCreationSuccess ] = useState(false);
-    const [userCreationError, setUserCreationError] = useState("");
-
     // set up the form object
     const navigate = useNavigate();
     const { 
@@ -46,7 +43,6 @@ const Register: React.FC =() => {
         handleSubmit,
         formState: { errors, isSubmitting }
     } = useForm<FormType>({ resolver: zodResolver(FormSchema)});
-
 
     // handle onSubmit function
     const handleSub = async (data: FormType) => {
@@ -59,7 +55,6 @@ const Register: React.FC =() => {
         try {
           const response = await AxiosInstance.post(url, data)
           if (response.status === 201 ) {
-              setUserCreationSuccess(true);
               // throw or alert the user of a success
               toast.success("Successfully created user",
                 {
@@ -68,18 +63,14 @@ const Register: React.FC =() => {
                   autoClose: 2000,
                 }
               )
-              
           }
         } catch (error) {
           if (axios.isAxiosError(error)) {
-            setUserCreationError(error.response?.data?.message)
             toast.error(error.response?.data?.message)
           }
           else if (error instanceof Error) {
-            setUserCreationError(error.message)
           }
           else { 
-            setUserCreationError("An unknown error occured")
             toast.error("An unknown error occured")
           }
         }
