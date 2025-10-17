@@ -56,13 +56,13 @@ const HeroSection: React.FC = () => {
 
          
           <form onSubmit={handleSubmit(handleTrack)}
-              className='flex justify-center items-center gap-2'>
+              className='flex flex-col justify-center items-center gap-2 '>
               <input 
                 {...register('track', { required: "Tracking id is required" })}
-                className='bg-white rounded-lg text-lg  
+                className='bg-white rounded-lg text-sm w-[300px] 
                 ps-4 py-0 text-black relative md:w-[400px]
                   lg:p-5 '
-            name="track" type="text" placeholder='Tracking number (  46fb9026-3623-406e-*******)'
+            name="track" type="text" placeholder='Tracking no. (  46fb9026-3623-406e-*******)'
                 />
                 { errors.track && 
                   <p className='text-white-300 '>{errors.track.message} </p>}

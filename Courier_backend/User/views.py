@@ -1,5 +1,6 @@
 """
     User view file, includes (views, part-authentication)
+    health check status view
 """
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,6 +16,20 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # custom class imports
 from User.models import User
 from User.serializer import UserSerializer
+
+
+class HealthCheckView(APIView):
+    """Health check view to verify if the service is running
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """Handles GET requests for health check
+        """
+        return Response(
+            {"status": "Service is running smoothly."},
+            status=status.HTTP_200_OK
+        )
 
 
 class CreateUserView(APIView):
