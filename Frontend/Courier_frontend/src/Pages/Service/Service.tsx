@@ -2,7 +2,6 @@ import React from 'react';
 import Button from '../../component/Button';
 import Card from '../../component/Card/Card';
 import { serviceCardData } from './ServiceCardData';
-import { span } from 'motion/react-client';
 import mycontainer from "../../assets/cta.png"
 import { motion } from "framer-motion"
 
@@ -21,7 +20,7 @@ const Service:React.FC = () => {
                 <span className='text-blue-900 ms-2 text-sm text-center  bg-gradient-to-r 
                     from-blue-200 via-blue-200 to-blue-50/70 rounded-2xl px-3 py-1 '>
                     <i className="fa-solid fa-location-dot text-blue-900 
-                    "></i> <tr/>
+                    "></i> 
                     Trusted Global Courier Partner
                 </span>
             </div>

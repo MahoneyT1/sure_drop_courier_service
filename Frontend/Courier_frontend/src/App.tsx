@@ -16,6 +16,7 @@ import "./App.css"
 import 'leaflet/dist/leaflet.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // ✅ Required
+import ProtectedRoute from './Pages/Auth/ProtectedRoute';
 
 
 const App: React.FC = () => {
@@ -25,16 +26,20 @@ const App: React.FC = () => {
         <Navbar />
         <ToastContainer autoClose={2000} />
         <Routes>
-          <Route path='/' element={ <Home/> } />
-          <Route path='/Login' element={ <Login/> }/>
+          <Route path='/' element={<Home />} />
+          <Route path='/Login' element={<Login />} />
           <Route path='/register' element={ <Register/> } />
           <Route path='/about' element={< About/> } />
           <Route path='/service' element={ <Service/> } />
-          <Route path='/track' element={ <Track/> } />
-          <Route path='/package-details' element={ <PackageDetailPage/> } />
-          <Route path='/create-shipment' element={ <CreateShipment/>} />
           <Route path='/contact' element={ <Contact/> }/>
 
+
+          {/* protected routes */}
+          <Route element={<ProtectedRoute />} >
+            <Route path='/create-shipment' element={ <CreateShipment/>} />
+            <Route path='/track' element={<Track />} />
+            <Route path='/package-details' element={<PackageDetailPage />} />
+          </Route>
         </Routes>
       </Router>
     

@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import ShipmentForm from './ShipmentForm';
-import axios from 'axios';
 import { toast } from 'react-toastify';
-import { AuthContext } from '../../component/Navbar/ToggleLoginLogoutButton';
 import { useDownloadReceipt } from './utils'
 import axiosInstance from '../../Utils/AxiosInstance';
+import { useAuth } from '../../Utils/AuthProvider';
 
 
 interface CreateShipmentTypes {
@@ -24,13 +23,13 @@ interface CreateShipmentTypes {
 const CreateShipment: React.FC = () => {
     const { downloadReceipt, receipt } = useDownloadReceipt();
 
-    // use the context
-    const Auth = useContext(AuthContext);
+    // descructure the data from Auth context
+    const { isAuthenticated } = useAuth();
 
     // handle the create shipment and filter the require and also handle the logics
     const handleOnSubmit = async (data: CreateShipmentTypes)=> {
         
-        if ( Auth?.isAuthenticated === true ) {
+        if ( isAuthenticated === true ) {
             try {
                 const response = await axiosInstance.post('package/', data);
 

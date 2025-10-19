@@ -1,19 +1,21 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { Menu, X } from 'lucide-react';
 import suredrop from "../../assets/updatedLogo.png";
 import {  Link, useNavigate } from 'react-router-dom';
 import Button from '../Button';
-import { AuthContext } from "./ToggleLoginLogoutButton";
 import 'react-toastify/dist/ReactToastify.css';
 import axiosInstance from '../../Utils/AxiosInstance';
-
+import { useAuth } from '../../Utils/AuthProvider';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isActive, setIsActive] = useState(false);
-    // const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [active, setIsActive] = useState(false);
 
-    const Auth = useContext(AuthContext);
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
+
+
     const navigateTo = useNavigate();
 
     // make a request to authenticated route to be sure the user is logged in
@@ -25,9 +27,14 @@ const Navbar: React.FC = () => {
 
         try {
             if (res.status === 200 ) {
-                Auth?.setIsAuthenticated(false);
-                navigateTo('/');
-                // toast("Logged out")
+                setIsAuthenticated(false);
+                toast("Logged out", {
+                    onClose: () => {
+                        navigateTo('/login')
+                    },
+                    autoClose: 2000
+                });
+
             }
         } catch (err) {
             console.warn(err);
@@ -52,15 +59,11 @@ const Navbar: React.FC = () => {
 
                     <li ><Link className='hover:text-yellow-300' to="/track">Track</Link></li>
                 </ul>
-                
-                {Auth?.isAuthenticated ? (
-                    <Button buttonName='logout' className='bg-primary p-1 rounded font-bold'
-                    onClickFunc={async ()=> handleLogout()} />
-                ): (
-                    <Button buttonName='login' className='bg-green-500 to-green-500 p-2 rounded font-bold'
-                       linkUrl='/login'/>
-                ) }
 
+                <button className='bg-green-500 to-green-500 p-2 rounded font-bold'
+                    onClick={ isAuthenticated ? handleLogout : ()=> navigateTo('/login') }>
+                        {isAuthenticated ? 'logout' : 'Login'}
+                </button>
             </nav>
             {/* Mobile Menu Button */}
             <button
@@ -83,7 +86,7 @@ const Navbar: React.FC = () => {
                         <li><Link className='hover:text-yellow-300 py-1 ' to="/service">Service</Link></li>
                         <li><Link className='hover:text-yellow-300 py-1  ' to="/track">Track</Link></li>
 
-                        {Auth?.isAuthenticated ? (
+                        { isAuthenticated ? (
                             <Button buttonName='logout' className='bg-red-500 p-1 rounded font-bold'
                                 onClickFunc={async () => handleLogout()} />
                         ) : (
